@@ -35,7 +35,7 @@
             --glass: rgba(255, 255, 255, 0.04);
             --glass-border: rgba(255, 255, 255, 0.08);
             --radius: 16px;
-            --transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             --huly-glow: 0 0 20px rgba(0, 229, 255, 0.3);
         }
 
@@ -104,25 +104,26 @@
         }
 
         html {
-            font-size: 110%;
+            font-size: 100%;
             /* Büyütülmüş ana font boyutu */
             scroll-behavior: auto;
             /* Disabled for Lenis */
             scrollbar-width: thin;
             scrollbar-color: var(--accent) var(--bg);
             background: var(--bg);
-            transition: background-color 0.5s ease, color 0.5s ease;
+            transition: background-color 0.3s ease, color 0.3s ease;
             overflow-x: hidden;
         }
 
         body {
             font-family: "Inter", sans-serif;
-            background: transparent;
+            background: var(--bg);
             color: var(--text);
             overflow-x: hidden;
             width: 100%;
+            position: relative;
             cursor: none;
-            transition: background-color 0.5s ease, color 0.5s ease;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         h1,
@@ -612,8 +613,9 @@
             left: 0;
             width: 100%;
             height: 100vh;
-            background: rgba(5, 5, 8, 0.97);
+            background: var(--bg);
             backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -621,12 +623,14 @@
             gap: 32px;
             z-index: 10000;
             opacity: 0;
+            visibility: hidden;
             pointer-events: none;
-            transition: var(--transition);
+            transition: opacity 0.3s ease, visibility 0.3s ease, background-color 0.3s ease;
         }
 
         .mobile-menu.active {
             opacity: 1;
+            visibility: visible;
             pointer-events: all;
         }
 
@@ -703,7 +707,7 @@
         }
 
         .hero h1 {
-            font-size: clamp(2.5rem, 7vw, 5.5rem);
+            font-size: clamp(2rem, 7vw, 4.8rem);
             font-weight: 800;
             margin-bottom: 24px;
             letter-spacing: -2px;
@@ -714,7 +718,7 @@
         }
 
         .hero-sub {
-            font-size: clamp(1rem, 2vw, 1.25rem);
+            font-size: clamp(0.9rem, 1.8vw, 1.15rem);
             color: var(--text-muted);
             max-width: 600px;
             margin: 0 auto 40px;
@@ -800,7 +804,7 @@
 
         .stat-num {
             font-family: "JetBrains Mono", monospace;
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: var(--accent);
             display: block;
@@ -1020,6 +1024,7 @@
             padding: 72px 0;
             position: relative;
             overflow: hidden;
+            transition: background-color 0.3s ease;
         }
 
         .section-label {
@@ -1042,7 +1047,7 @@
         }
 
         .section-title {
-            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-size: clamp(1.8rem, 3.5vw, 3.2rem);
             margin-bottom: 24px;
             letter-spacing: -1px;
         }
@@ -1632,7 +1637,7 @@
         }
 
         .why-icon {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             margin-bottom: 20px;
         }
 
@@ -1737,13 +1742,56 @@
             color: var(--text-muted);
         }
 
+        .testimonial-dots {
+            display: none;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 24px;
+        }
+
+        .testimonial-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--glass-border);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .testimonial-dot.active {
+            background: var(--accent);
+            transform: scale(1.2);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
         @media (max-width: 768px) {
             .why-grid {
                 grid-template-columns: 1fr;
             }
 
             .testimonial-grid {
-                grid-template-columns: 1fr;
+                display: flex;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                scroll-behavior: smooth;
+                -webkit-overflow-scrolling: touch;
+                gap: 20px;
+                padding-bottom: 10px;
+                scrollbar-width: none;
+                margin-top: 32px;
+            }
+
+            .testimonial-grid::-webkit-scrollbar {
+                display: none;
+            }
+
+            .testimonial-card {
+                flex: 0 0 100%;
+                scroll-snap-align: center;
+            }
+
+            .testimonial-dots {
+                display: flex;
             }
         }
 
@@ -1916,7 +1964,7 @@
             left: -80px;
             top: 32px;
             font-family: "Space Grotesk", sans-serif;
-            font-size: 2.5rem;
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
             font-weight: 800;
             color: var(--accent);
             opacity: 0.3;
@@ -2079,7 +2127,7 @@
 
         .flagship-price {
             font-family: "JetBrains Mono", monospace;
-            font-size: 3.5rem;
+            font-size: 3rem;
             font-weight: 800;
             color: var(--accent);
             text-shadow: 0 0 30px var(--accent-glow);
@@ -2172,8 +2220,11 @@
                 grid-template-columns: 1fr;
             }
 
-            .flagship-card {
-                padding: 40px 24px;
+            .flagship-badge {
+                padding: 6px 16px;
+                font-size: 0.7rem;
+                white-space: nowrap;
+                top: -16px;
             }
 
             .flagship-header h3 {
@@ -2181,7 +2232,7 @@
             }
 
             .flagship-price {
-                font-size: 2.5rem;
+                font-size: 2rem;
             }
 
             .flagship-features {
@@ -2218,7 +2269,32 @@
 
         @media (max-width: 600px) {
             .chroma-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+                padding: 8px;
+            }
+
+            .chroma-card {
+                border-radius: 16px;
+            }
+
+            .chroma-img-wrapper {
+                padding: 4px;
+                height: 80px;
+            }
+
+            .chroma-info {
+                padding: 6px 8px;
+            }
+
+            .chroma-info h3 {
+                font-size: 0.7rem;
+                margin-bottom: 2px;
+            }
+
+            .chroma-info p {
+                font-size: 0.6rem;
+                line-height: 1.15;
             }
         }
 
@@ -2568,11 +2644,19 @@
             }
 
             .hero-stats {
-                gap: 24px;
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 8px;
+                margin-top: 24px;
             }
 
             .stat-num {
-                font-size: 1.5rem;
+                font-size: 1.1rem;
+            }
+
+            .stat-label {
+                font-size: 0.6rem;
+                line-height: 1.2;
             }
 
             .hero h1 {
@@ -2601,6 +2685,10 @@
                 left: 60px;
             }
 
+            section {
+                padding: 60px 0;
+            }
+
             #cursor-canvas,
             #cursor-glow,
             #cursor-point {
@@ -2615,12 +2703,49 @@
                 gap: 32px;
             }
 
+            .marquee-container {
+                padding: 16px 0;
+                margin: 0;
+            }
+
             .marquee-content {
-                gap: 30px;
+                gap: 24px;
+            }
+
+            .chroma-grid {
+                margin: 20px auto;
+            }
+
+            .section-desc {
+                margin-bottom: 24px;
+            }
+
+            .faq-grid {
+                margin-top: 24px;
             }
 
             .section-title {
                 word-wrap: break-word;
+                font-size: clamp(1.8rem, 7vw, 2.8rem);
+            }
+
+            .logo-mark {
+                width: 48px;
+                height: 48px;
+            }
+
+            .logo-name {
+                font-size: 1.5rem;
+                letter-spacing: 2px;
+            }
+
+            .logo-sub {
+                font-size: 0.7rem;
+                letter-spacing: 3px;
+            }
+
+            .nav {
+                padding: 12px 0;
             }
         }
 
@@ -2636,11 +2761,17 @@
             }
 
             section {
-                padding: 80px 0;
+                padding: 24px 0;
             }
 
             .hero {
                 padding-top: 80px;
+                padding-bottom: 100px;
+            }
+
+            .scroll-indicator {
+                bottom: 10px;
+                gap: 4px;
             }
 
             .process-steps {
@@ -2649,7 +2780,7 @@
 
             .step-number {
                 left: -54px;
-                font-size: 1.5rem;
+                font-size: 1.4rem;
             }
 
             .step-dot {
@@ -2817,7 +2948,7 @@
         }
 
         .result-amount {
-            font-size: 3rem;
+            font-size: clamp(1.8rem, 9vw, 2.8rem);
             font-weight: 800;
             margin-bottom: 10px;
             font-family: "Space Grotesk", sans-serif;
@@ -2841,6 +2972,127 @@
             color: var(--accent);
             border-radius: 50px;
             font-weight: 600;
+        }
+
+        /* --- LEGAL MODAL STYLES --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            position: relative;
+            padding: 40px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+
+        .modal-close:hover {
+            background: var(--accent);
+            color: var(--bg);
+            border-color: var(--accent);
+        }
+
+        .modal-body {
+            overflow-y: auto;
+            padding-right: 15px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
+        }
+
+        .modal-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-body::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .modal-body::-webkit-scrollbar-thumb {
+            background-color: var(--accent);
+            border-radius: 10px;
+        }
+
+        .modal-body h2 {
+            font-size: 1.75rem;
+            margin-bottom: 24px;
+            color: var(--accent);
+        }
+
+        .modal-body h3 {
+            font-size: 1.25rem;
+            margin: 24px 0 12px;
+            color: #fff;
+        }
+
+        .modal-body p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .modal-body ul {
+            margin-bottom: 24px;
+            padding-left: 20px;
+        }
+
+        .modal-body li {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            list-style-type: disc;
         }
     </style>
 </head>
@@ -3251,6 +3503,7 @@
                     </div>
                 </div>
             </div>
+            <div class="testimonial-dots" id="testimonial-dots"></div>
         </div>
     </section>
     <!-- PROCESS -->
@@ -3343,11 +3596,7 @@
                             <span class="feat-icon">💬</span> Kurumsal İletişim Entegrasyonu
                         </li>
                     </ul>
-                    <button class="flagship-cta" onclick="
-                document
-                  .getElementById('iletisim')
-                  .scrollIntoView({ behavior: 'smooth' })
-              ">
+                    <button class="flagship-cta" onclick="startCheckout()">
                         Projeyi Başlat <span class="arrow">›</span>
                     </button>
                 </div>
@@ -3587,7 +3836,7 @@
     <section id="faq" style="position: relative; overflow: hidden; background-color: var(--bg2)">
         <div class="container" style="position: relative; z-index: 1">
             <div class="faq-grid">
-                <div class="section-label reveal" style="justify-content: center; margin-bottom: 32px">
+                <div class="section-label reveal" style="justify-content: center; margin-bottom: 20px">
                     Sıkça Sorulan Sorular
                 </div>
                 <div class="faq-item reveal">
@@ -3700,7 +3949,7 @@
     <!-- FOOTER -->
     <footer class="footer">
         <div class="container">
-            <div class="footer-grid">
+            <div class="footer-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
                 <div class="footer-brand">
                     <a href="#" class="logo" aria-label="Parlaq Agency" onclick="
                 event.preventDefault();
@@ -3747,6 +3996,19 @@
                     </ul>
                 </div>
                 <div>
+                    <h4>Kurumsal</h4>
+                    <ul class="footer-links">
+                        <li><a href="javascript:void(0)" onclick="openLegal('hakkimizda')">Hakkımızda</a></li>
+                        <li><a href="javascript:void(0)" onclick="openLegal('mesafeli-satis')">Mesafeli Satış
+                                Sözleşmesi</a></li>
+                        <li><a href="javascript:void(0)" onclick="openLegal('iade-iptal')">İptal ve İade Koşulları</a>
+                        </li>
+                        <li><a href="javascript:void(0)" onclick="openLegal('gizlilik')">Gizlilik Politikası</a></li>
+                        <li><a href="javascript:void(0)" onclick="openLegal('kullanim-kosullari')">Kullanım
+                                Koşulları</a></li>
+                    </ul>
+                </div>
+                <div>
                     <h4>İletişim</h4>
                     <ul class="footer-links">
                         <li>
@@ -3768,14 +4030,17 @@
         </div>
     </footer>
     <!-- WHATSAPP -->
-    <a href="https://wa.me/905349259614" class="whatsapp-btn" target="_blank"
-        aria-label="WhatsApp üzerinden bizimle iletişime geçin">
-        <svg viewBox="0 0 24 24">
-            <path
-                d="M12.031 6.172c-2.135 0-3.867 1.732-3.867 3.867 0 .73.203 1.411.554 1.992l-.588 2.152 2.211-.579c.539.293 1.157.463 1.815.463 2.135 0 3.867-1.732 3.867-3.867s-1.732-3.867-3.867-3.867zm2.847 5.514c-.04.093-.209.15-.31.164-.101.013-.23.018-.313-.011-.114-.041-.247-.091-.336-.122-.386-.134-.733-.31-.998-.521-.19-.151-.324-.311-.422-.49-.098-.18-.147-.375-.147-.57 0-.54.342-.893.405-.951.063-.058.203-.092.304-.092.101 0 .202.001.268.006.072.005.148-.026.209.124.06.15.204.496.224.542.02.046.03.1.002.161-.028.061-.06.131-.118.194-.058.063-.121.109-.121.109s.114.195.337.394c.223.198.494.33.743.433.25.103.394.084.512-.019.118-.103.512-.593.63-.79.118-.197.236-.164.394-.105.158.059 1.004.474 1.177.56.173.086.289.13.332.204.043.074.043.424-.131.579zM12 2C6.477 2 2 6.477 2 12c0 1.891.524 3.66 1.434 5.168L2 22l4.958-1.413A9.956 9.956 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a7.963 7.963 0 0 1-4.175-1.179l-.299-.176-3.091.881.899-3.286-.194-.31A7.962 7.962 0 0 1 4 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z" />
-        </svg>
-        <span class="whatsapp-dot"></span>
     </a>
+
+    <!-- LEGAL MODAL -->
+    <div id="legal-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeLegal()" aria-label="Kapat">&times;</button>
+            <div id="modal-body" class="modal-body">
+                <!-- Content injected via JS -->
+            </div>
+        </div>
+    </div>
     <!-- SCRIPTS -->
     <script>
         // Init theme as early as possible to prevent flash of unstyled content
@@ -3809,6 +4074,88 @@
                 }
             });
         })();
+
+        /* --- LEGAL MODAL LOGIC & CONTENT --- */
+        const legalContent = {
+            'hakkimizda': `
+                <h2>Hakkımızda</h2>
+                <p>Parlaq Agency, dijital dünyada markaların potansiyelini en üst düzeye çıkarmak için kurulmuş, teknoloji ve yaratıcılığı harmanlayan bir dijital ajanstır.</p>
+                <p>Yapay zeka destekli stratejilerimiz, modern web tasarım yaklaşımlarımız ve veri odaklı reklam yönetimimiz ile müşterilerimize sürdürülebilir büyüme sağlıyoruz. Bizim için her proje, dijital evrende yeni bir yıldızın parlamasıdır.</p>
+                <h3>Vizyonumuz</h3>
+                <p>Türkiye'den dünyaya açılan, teknolojik inovasyonlarıyla sektöre yön veren en yaratıcı dijital ajans olmak.</p>
+                <h3>Misyonumuz</h3>
+                <p>Karmaşık dijital süreçleri basitleştirerek, her ölçekteki işletmenin dijital dönüşümünü en verimli ve estetik şekilde gerçekleştirmek.</p>
+            `,
+            'gizlilik': `
+                <h2>Gizlilik Politikası</h2>
+                <p>Parlaq Agency ("Ajans"), kullanıcılarının gizliliğine saygı duyar ve kişisel verilerin korunmasını ilke edinir. Bu politika, web sitemizi ziyaret ettiğinizde toplanan verilerin nasıl kullanıldığını açıklar.</p>
+                <h3>1. Toplanan Veriler</h3>
+                <p>Ad, e-posta, telefon numarası gibi sizin tarafınızdan sağlanan iletişim bilgileri ve IP adresi, tarayıcı türü gibi otomatik olarak toplanan kullanım verileri.</p>
+                <h3>2. Verilerin Kullanım Amacı</h3>
+                <p>Size hizmet sunmak, taleplerinizi yanıtlamak ve web sitemizi geliştirmek amacıyla verileriniz işlenmektedir.</p>
+                <h3>3. KVKK Haklarınız</h3>
+                <p>6698 sayılı KVKK uyarınca verilerinizin işlenip işlenmediğini öğrenme, yanlış işlenmişse düzeltilmesini isteme ve silinmesini talep etme hakkına sahipsiniz.</p>
+            `,
+            'mesafeli-satis': `
+                <h2>Mesafeli Satış Sözleşmesi</h2>
+                <p>Bu sözleşme, Parlaq Agency ile hizmet satın alan alıcı arasındaki hak ve yükümlülükleri belirler.</p>
+                <h3>1. Taraflar</h3>
+                <p>Satıcı: Parlaq Agency<br>Alıcı: Hizmet alan müşteri</p>
+                <h3>2. Sözleşmenin Konusu</h3>
+                <p>Alıcının, satıcıya ait web sitesi üzerinden elektronik ortamda siparişini verdiği hizmetin satışı ve teslimi ile ilgili 6502 sayılı Tüketicinin Korunması Hakkında Kanun ve Mesafeli Sözleşmeler Yönetmeliği hükümleri gereğince tarafların hak ve yükümlülüklerinin saptanmasıdır.</p>
+                <h3>3. Hizmet Teslimi</h3>
+                <p>Dijital hizmetler, belirtilen süreler içinde elektronik ortamda alıcıya teslim edilir.</p>
+            `,
+            'iade-iptal': `
+                <h2>İptal ve İade Koşulları</h2>
+                <p>Parlaq Agency olarak dijital hizmetler sunduğumuz için iade süreçlerimiz sunulan hizmetin doğasına göre şekillenmektedir.</p>
+                <h3>1. Cayma Hakkı</h3>
+                <p>Elektronik ortamda anında ifa edilen hizmetler ve tüketiciye anında teslim edilen gayrimaddi mallara ilişkin sözleşmelerde cayma hakkı kullanılamaz. Ancak, henüz başlanmamış hizmetler için 14 gün içinde iptal talebinde bulunulabilir.</p>
+                <h3>2. İade Süreci</h3>
+                <p>İptal onayı alınan hizmet bedelleri, 7-14 iş günü içerisinde ödeme yapılan karta iade edilir.</p>
+                <h3>3. Memnuniyet Garantisi</h3>
+                <p>Sınırsız revizyon hakkı sunulan hizmetlerimizde, proje onaylanana kadar gerekli düzeltmeler bedelsiz olarak yapılmaktadır.</p>
+            `,
+            'kullanim-kosullari': `
+                <h2>Kullanım Koşulları</h2>
+                <p>Bu web sitesini kullanarak aşağıdaki koşulları kabul etmiş sayılırsınız.</p>
+                <h3>1. Fikri Mülkiyet</h3>
+                <p>Sitede yer alan tüm içerik, tasarım ve grafikler Parlaq Agency'ye aittir ve izinsiz kullanılamaz.</p>
+                <h3>2. Hizmet Kullanımı</h3>
+                <p>Web sitesi üzerinden sunulan formların ve diğer interaktif alanların kötüye kullanımı yasaktır.</p>
+                <h3>3. Sorumluluk Sınırı</h3>
+                <p>Sitenin kullanımından kaynaklanabilecek teknik aksaklıklardan Ajans sorumlu tutulamaz.</p>
+            `
+        };
+
+        window.openLegal = function (type) {
+            const modal = document.getElementById('legal-modal');
+            const body = document.getElementById('modal-body');
+            const content = legalContent[type] || '<h2>Hata</h2><p>İçerik bulunamadı.</p>';
+
+            body.innerHTML = content;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            modal.onclick = function (e) {
+                if (e.target === modal) closeLegal();
+            };
+        };
+
+        window.closeLegal = function () {
+            const modal = document.getElementById('legal-modal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        };
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLegal();
+        });
+
+        window.startCheckout = function () {
+            // Iyzico entegrasyonu onay sonrası buraya bağlanacaktır.
+            alert("İyzico Kurumsal başvuru süreciniz onaylandıktan sonra ödeme sistemi aktif edilecektir. Teknik altyapı hazırlandı.");
+        };
 
       /* --- GLOW CURSOR --- */ (function () {
             const glow = document.getElementById("cursor-glow");
@@ -3877,17 +4224,17 @@
             hamburger.classList.remove("active");
             mobileMenu.classList.remove("active");
         }
-      /* â”€â”€â”€ THREE.JS HERO â”€â”€â”€ */ (function () {
+      /* ——— THREE.JS HERO ——— */ (function () {
             const canvas = document.getElementById("hero-canvas");
             const renderer = new THREE.WebGLRenderer({
                 canvas,
                 alpha: true,
-                antialias: false,
-          /* Performance boost */ powerPreference: "high-performance",
+                antialias: true,
+          /* Performance vs Quality */ powerPreference: "high-performance",
             });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-        /* Reduced for perf */ const scene = new THREE.Scene();
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        /* Hero Scene */ const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(
                 60,
                 window.innerWidth / window.innerHeight,
@@ -3900,45 +4247,45 @@
                 color: 0x00e5ff,
                 wireframe: true,
                 transparent: true,
-                opacity: 0.12, // decreased from 0.2
+                opacity: 0.25, // increased from 0.12
             });
             const ico = new THREE.Mesh(geo, mat);
             scene.add(ico);
-        /* Reduced particle count for performance */ const pGeo =
+        /* Dust Particles - Primary */ const pGeo =
                 new THREE.BufferGeometry();
-            const pCount = 1200;
-        /* Reduced from 2500 */ const pos = new Float32Array(pCount * 3);
+            const pCount = 2200;
+        /* Increased from 1200 */ const pos = new Float32Array(pCount * 3);
             for (let i = 0; i < pCount * 3; i++)
                 pos[i] = (Math.random() - 0.5) * 24;
             pGeo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
             const pMat = new THREE.PointsMaterial({
                 color: 0x00e5ff,
-                size: 0.022, // decreased from 0.025
+                size: 0.028, // increased from 0.022
                 transparent: true,
-                opacity: 0.6, // decreased from 0.8
+                opacity: 0.8, // increased from 0.6
                 sizeAttenuation: true,
             });
             const particles = new THREE.Points(pGeo, pMat);
             scene.add(particles);
-        /* Static/subtle accent dots */ const pGeo2 =
+        /* Static/subtle accent dots - Secondary */ const pGeo2 =
                 new THREE.BufferGeometry();
-            const pCount2 = 250;
-        /* Reduced from 400 */ const pos2 = new Float32Array(pCount2 * 3);
+            const pCount2 = 500;
+        /* Increased from 250 */ const pos2 = new Float32Array(pCount2 * 3);
             for (let i = 0; i < pCount2 * 3; i++)
                 pos2[i] = (Math.random() - 0.5) * 24;
             pGeo2.setAttribute("position", new THREE.BufferAttribute(pos2, 3));
             const pMat2 = new THREE.PointsMaterial({
                 color: 0x7c3aed,
-                size: 0.028, // decreased from 0.035
+                size: 0.035, // increased from 0.028
                 transparent: true,
-                opacity: 0.4, // decreased from 0.6
+                opacity: 0.6, // increased from 0.4
                 sizeAttenuation: true,
             });
             const particles2 = new THREE.Points(pGeo2, pMat2);
             scene.add(particles2);
             let mx = 0,
                 my = 0;
-            if (!isTouch) {
+            if (!window.matchMedia("(pointer: coarse)").matches) {
                 document.addEventListener("mousemove", (e) => {
                     mx = (e.clientX / window.innerWidth - 0.5) * 2;
                     my = (e.clientY / window.innerHeight - 0.5) * 2;
@@ -4519,6 +4866,71 @@
                 requestAnimationFrame(() => this.animate());
             }
         }
+        new VariableProximity(".stat-num");
+
+        /* ——— TESTIMONIAL CAROUSEL ——— */
+        class TestimonialCarousel {
+            constructor() {
+                this.grid = document.querySelector('.testimonial-grid');
+                this.dotsContainer = document.getElementById('testimonial-dots');
+                this.cards = document.querySelectorAll('.testimonial-card');
+                if (!this.grid || !this.cards.length) return;
+                this.currentIndex = 0;
+                this.interval = null;
+                this.isPaused = false;
+                this.init();
+            }
+            init() {
+                this.createDots();
+                this.updateActiveDot();
+                this.startAutoSlide();
+                this.grid.addEventListener('scroll', () => {
+                    this.updateActiveDot();
+                }, { passive: true });
+                this.grid.addEventListener('mouseenter', () => this.pauseAutoSlide());
+                this.grid.addEventListener('mouseleave', () => this.startAutoSlide());
+                this.grid.addEventListener('touchstart', () => this.pauseAutoSlide(), { passive: true });
+                this.grid.addEventListener('touchend', () => this.startAutoSlide(), { passive: true });
+            }
+            createDots() {
+                this.cards.forEach((_, index) => {
+                    const dot = document.createElement('div');
+                    dot.classList.add('testimonial-dot');
+                    dot.addEventListener('click', () => this.scrollToIndex(index));
+                    this.dotsContainer.appendChild(dot);
+                });
+            }
+            updateActiveDot() {
+                const scrollLeft = this.grid.scrollLeft;
+                const width = this.grid.offsetWidth;
+                this.currentIndex = Math.round(scrollLeft / width);
+                const dots = this.dotsContainer.querySelectorAll('.testimonial-dot');
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === this.currentIndex);
+                });
+            }
+            scrollToIndex(index) {
+                const width = this.grid.offsetWidth;
+                this.grid.scrollTo({
+                    left: index * width,
+                    behavior: 'smooth'
+                });
+            }
+            startAutoSlide() {
+                if (window.innerWidth > 768) return;
+                this.pauseAutoSlide();
+                this.interval = setInterval(() => {
+                    if (!this.isPaused) {
+                        this.currentIndex = (this.currentIndex + 1) % this.cards.length;
+                        this.scrollToIndex(this.currentIndex);
+                    }
+                }, 5000);
+            }
+            pauseAutoSlide() {
+                if (this.interval) clearInterval(this.interval);
+            }
+        }
+        new TestimonialCarousel();
       /* Initialize Proximity Animation */ document.addEventListener(
             "DOMContentLoaded",
             () => {
