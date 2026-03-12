@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parlaq Admin — Sipariş Yönetimi</title>
+    <link rel="stylesheet" href="../index.css">
+    <style>
+        :root {
+            --bg: #050508;
+            --bg2: #0a0a12;
+            --accent: #00e5ff;
+            --text: #f0f0f5;
+            --text-muted: #a0a0b0;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            background: linear-gradient(to right, #00e5ff, #7c3aed);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--bg2);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .order-table-container {
+            background: var(--bg2);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background: rgba(255,255,255,0.02);
+            padding: 20px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        td {
+            padding: 20px;
+            border-bottom: 1px solid var(--glass-border);
+            font-size: 0.95rem;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-paid { background: rgba(0, 255, 150, 0.1); color: #00ff96; }
+        .status-pending { background: rgba(255, 200, 0, 0.1); color: #ffc800; }
+        .status-failed { background: rgba(255, 50, 50, 0.1); color: #ff3232; }
+
+        .login-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-card {
+            background: var(--bg2);
+            border: 1px solid var(--glass-border);
+            padding: 40px;
+            border-radius: 24px;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: white;
+            margin: 20px 0;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 12px 24px;
+            background: var(--accent);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .detail-row {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div id="login" class="login-overlay">
+        <div class="login-card">
+            <h1>Admin Girişi</h1>
+            <input type="password" id="admin-pass" placeholder="Şifrenizi girin...">
+            <button onclick="login()">Giriş Yap</button>
+        </div>
+    </div>
+
+    <div class="admin-container">
+        <div class="header">
+            <h1>Sipariş Yönetimi</h1>
+            <button onclick="refresh()" style="background: rgba(255,255,255,0.05); color: white;">Yenile</button>
+        </div>
+
+        <div class="order-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Müşteri</th>
+                        <th>Tutar</th>
+                        <th>Durum</th>
+                        <th>Tarih</th>
+                    </tr>
+                </thead>
+                <tbody id="order-list">
+                    <!-- Js ile dolacak -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let password = "";
+
+        async function login() {
+            password = document.getElementById('admin-pass').value;
+            localStorage.setItem('admin_pass', password);
+            await fetchOrders();
+        }
+
+        async function refresh() {
+            await fetchOrders();
+        }
+
+        async function fetchOrders() {
+            const pass = localStorage.getItem('admin_pass');
+            if(!pass) return;
+
+            try {
+                const response = await fetch('/api/admin-orders', {
+                    headers: { 'x-admin-password': pass }
+                });
+
+                if(response.ok) {
+                    document.getElementById('login').style.display = 'none';
+                    const orders = await response.json();
+                    renderOrders(orders);
+                } else {
+                    alert('Hatalı şifre veya yetkisiz erişim.');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function renderOrders(orders) {
+            const container = document.getElementById('order-list');
+            container.innerHTML = orders.map(order => `
+                <tr>
+                    <td>
+                        <div style="font-weight: 700;">#${order.id}</div>
+                        <div style="font-size: 0.7rem; color: #555;">${order.merchant_oid || '-'}</div>
+                    </td>
+                    <td>
+                        <div style="font-weight: 600;">${order.customer_name}</div>
+                        <div class="detail-row">${order.customer_email}</div>
+                        <div class="detail-row">${order.customer_phone}</div>
+                        <div class="detail-row" style="color: #888; margin-top: 8px;"><b>Adres:</b> ${order.customer_address}</div>
+                        ${order.order_notes ? `<div class="detail-row" style="color: var(--accent);"><b>Not:</b> ${order.order_notes}</div>` : ''}
+                    </td>
+                    <td>18.000 ₺</td>
+                    <td>
+                        <span class="status-badge status-${order.status}">
+                            ${order.status === 'paid' ? 'ÖDENDİ' : order.status === 'pending' ? 'BEKLEMEDE' : 'HATA'}
+                        </span>
+                    </td>
+                    <td style="font-size: 0.8rem; color: var(--text-muted);">
+                        ${new Date(order.created_at).toLocaleString('tr-TR')}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Auto login check
+        if(localStorage.getItem('admin_pass')) {
+            fetchOrders();
+        }
+    </script>
+</body>
+</html>
