@@ -144,14 +144,43 @@
             color: var(--text-muted);
             margin-top: 4px;
         }
+
+        /* Password Toggle Styles */
+        .pass-wrapper {
+            position: relative;
+            margin: 20px 0;
+        }
+        .pass-wrapper input {
+            margin: 0;
+            padding-right: 45px;
+        }
+        .toggle-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            padding: 8px;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .toggle-btn:hover { color: var(--accent); }
     </style>
 </head>
 <body>
     <div id="login" class="login-overlay">
         <div class="login-card">
             <h1>Admin Girişi</h1>
-            <input type="password" id="admin-pass" placeholder="Şifrenizi girin...">
-            <button onclick="login()">Giriş Yap</button>
+            <div class="pass-wrapper">
+                <input type="password" id="admin-pass" placeholder="Şifrenizi girin...">
+                <button type="button" class="toggle-btn" onclick="togglePass()">
+                    <svg id="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+            </div>
+            <button onclick="login()" style="width: 100%;">Giriş Yap</button>
         </div>
     </div>
 
@@ -186,6 +215,18 @@
             password = document.getElementById('admin-pass').value;
             localStorage.setItem('admin_pass', password);
             await fetchOrders();
+        }
+
+        function togglePass() {
+            const input = document.getElementById('admin-pass');
+            const icon = document.getElementById('eye-icon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+            } else {
+                input.type = 'password';
+                icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+            }
         }
 
         async function refresh() {
