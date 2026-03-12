@@ -3233,7 +3233,7 @@
               );
             ">
                     <div class="chroma-img-wrapper">
-                        <img src="service_web.png" alt="Website Tasarımı" />
+                        <img src="assets/service_web.png" alt="Website Tasarımı" />
                     </div>
                     <footer class="chroma-info">
                         <h3>Website Tasarımı</h3>
@@ -3253,7 +3253,7 @@
               );
             ">
                     <div class="chroma-img-wrapper">
-                        <img src="service_social.png" alt="Sosyal Medya Yönetimi" />
+                        <img src="assets/service_social.png" alt="Sosyal Medya Yönetimi" />
                     </div>
                     <footer class="chroma-info">
                         <h3>Sosyal Medya Yönetimi</h3>
@@ -3273,7 +3273,7 @@
               );
             ">
                     <div class="chroma-img-wrapper">
-                        <img src="service_ads.png" alt="Reklam Yönetimi" />
+                        <img src="assets/service_ads.png" alt="Reklam Yönetimi" />
                     </div>
                     <footer class="chroma-info">
                         <h3>Reklam Yönetimi</h3>
@@ -3293,7 +3293,7 @@
               );
             ">
                     <div class="chroma-img-wrapper">
-                        <img src="service_ai.png" alt="AI Otopilot" />
+                        <img src="assets/service_ai.png" alt="AI Otopilot" />
                     </div>
                     <footer class="chroma-info">
                         <h3>AI Otopilot</h3>
@@ -3330,7 +3330,7 @@
                         <div class="frame-browser">
                             <span></span><span></span><span></span>
                         </div>
-                        <img src="compare_bad.png" alt="Kötü website örneği" loading="lazy" />
+                        <img src="assets/compare_bad.png" alt="Kötü website örneği" loading="lazy" />
                     </div>
                     <ul class="compare-list">
                         <li><span class="x-icon">❌</span> Hazır şablonlar kullanır</li>
@@ -3392,7 +3392,7 @@
                         <div class="frame-browser">
                             <span></span><span></span><span></span>
                         </div>
-                        <img src="compare_good.png" alt="Premium Parlaq website örneği" loading="lazy" />
+                        <img src="assets/compare_good.png" alt="Premium Parlaq website örneği" loading="lazy" />
                     </div>
                     <ul class="compare-list">
                         <li>
@@ -3436,7 +3436,7 @@
                         yanımdaydılar.
                     </p>
                     <div class="testimonial-author">
-                        <img src="avatar_mehmet.png" alt="Mehmet A." class="author-avatar" style="
+                        <img src="assets/avatar_mehmet.png" alt="Mehmet A." class="author-avatar" style="
                   border: none;
                   background: none;
                   object-fit: cover;
@@ -3455,7 +3455,7 @@
                         markamıza çok daha fazla güveniyor.
                     </p>
                     <div class="testimonial-author">
-                        <img src="avatar_selin.png" alt="Selin K." class="author-avatar" style="
+                        <img src="assets/avatar_selin.png" alt="Selin K." class="author-avatar" style="
                   border: none;
                   background: none;
                   object-fit: cover;
@@ -3579,7 +3579,7 @@
                             <span class="feat-icon">💬</span> Kurumsal İletişim Entegrasyonu
                         </li>
                     </ul>
-                    <button class="flagship-cta" onclick="startCheckout()">
+                    <button class="flagship-cta" onclick="startCheckout('Premium Mağaza Kurulumu', 18000)">
                         Projeyi Başlat <span class="arrow">›</span>
                     </button>
                 </div>
@@ -4054,9 +4054,9 @@
                     <div class="checkout-summary">
                         <div>
                             <div class="checkout-summary-title">Seçilen Paket</div>
-                            <div style="font-weight: 600;">Premium Mağaza Kurulumu</div>
+                            <div id="summary-package-name" style="font-weight: 600;">Paket Adı</div>
                         </div>
-                        <div class="checkout-summary-price">₺18.000</div>
+                        <div id="summary-package-price" class="checkout-summary-price">₺0</div>
                     </div>
                     <form id="checkout-form" onsubmit="handleCheckoutFormSubmit(event)">
                         <div class="form-group">
@@ -4205,13 +4205,19 @@
             if (e.key === 'Escape') closeLegal();
         });
 
-        window.startCheckout = function () {
+        window.startCheckout = function (packageName, price) {
             const modal = document.getElementById("checkout-modal");
+            
+            // Paket bilgilerini güncelle
+            document.getElementById("summary-package-name").innerText = packageName || "Hizmet Alımı";
+            document.getElementById("summary-package-price").innerText = "₺" + (price || "0").toLocaleString('tr-TR');
+            
+            // Global değişkenlere ata (form gönderirken kullanmak için)
+            window.selectedPackage = packageName;
+            window.selectedPrice = price;
+
             modal.classList.add("active");
             document.body.style.overflow = "hidden";
-            
-            // Log for debugging
-            console.log("Checkout Modal Opened.");
         };
 
         window.closeCheckout = function () {
@@ -4244,7 +4250,11 @@
                 const response = await fetch('/api/paytr-token', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email, phone, address, notes })
+                    body: JSON.stringify({ 
+                        name, email, phone, address, notes,
+                        packageName: window.selectedPackage,
+                        amount: window.selectedPrice
+                    })
                 });
 
                 const data = await response.json();
