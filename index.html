@@ -4040,7 +4040,7 @@
 
     <!-- CHECKOUT MODAL -->
     <div id="checkout-modal" class="checkout-modal-overlay">
-        <div class="checkout-modal-content">
+        <div class="checkout-modal-content" data-lenis-prevent>
             <div class="checkout-header">
                 <h3>Projeyi Başlat</h3>
                 <button class="checkout-close" onclick="closeCheckout()" aria-label="Kapat">&times;</button>
@@ -4266,6 +4266,28 @@
                 console.error(error);
             }
         };
+
+        // Modal açıkken formda enter'a basılınca Gönder tetiklemesi
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkoutForm = document.getElementById('checkout-form');
+            if(checkoutForm) {
+                checkoutForm.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault(); // Textarea'da alt satıra geçmeyi engelle
+                        
+                        // Form geçerliyse gönder (required alanlar vb. dahil)
+                        if (checkoutForm.checkValidity()) {
+                            // Programatik olarak submit event'ini tetikliyoruz
+                            const submitEvent = new Event('submit', { cancelable: true, bubbles: true });
+                            checkoutForm.dispatchEvent(submitEvent);
+                        } else {
+                            // İçinde hata olan ilk alana odaklan veya native hata uyarılarını göster
+                            checkoutForm.reportValidity();
+                        }
+                    }
+                });
+            }
+        });
 
       /* --- GLOW CURSOR --- */ (function () {
             const glow = document.getElementById("cursor-glow");
