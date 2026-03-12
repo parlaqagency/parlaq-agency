@@ -3551,6 +3551,26 @@
             <div class="flagship-container">
                 <div class="flagship-card reveal">
                     <div class="flagship-badge" style="background: linear-gradient(135deg, #ff3b30, #ff9500); box-shadow: 0 0 40px rgba(255, 59, 48, 0.5); font-size: 1.1rem; padding: 12px 32px; transform: translateX(-50%) translateY(-50%) scale(1.1); left: 50%;">BU HAFTAYA ÖZEL FIRSAT</div>
+                    <!-- Geri Sayım Sayacı -->
+                    <div id="countdown-wrapper" style="display: flex; justify-content: center; align-items: center; gap: 8px; margin: 20px 0 4px 0;">
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <div style="display: flex; flex-direction: column; align-items: center; background: rgba(255,59,48,0.12); border: 1px solid rgba(255,59,48,0.3); border-radius: 10px; padding: 8px 14px; min-width: 52px;">
+                                <span id="cd-hours" style="font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 800; color: #ff453a; line-height: 1;">00</span>
+                                <span style="font-size: 0.6rem; color: var(--text-muted); margin-top: 3px; text-transform: uppercase; letter-spacing: 1px;">Saat</span>
+                            </div>
+                            <span style="font-size: 1.4rem; font-weight: 800; color: #ff453a; margin-bottom: 14px;">:</span>
+                            <div style="display: flex; flex-direction: column; align-items: center; background: rgba(255,59,48,0.12); border: 1px solid rgba(255,59,48,0.3); border-radius: 10px; padding: 8px 14px; min-width: 52px;">
+                                <span id="cd-minutes" style="font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 800; color: #ff453a; line-height: 1;">00</span>
+                                <span style="font-size: 0.6rem; color: var(--text-muted); margin-top: 3px; text-transform: uppercase; letter-spacing: 1px;">Dakika</span>
+                            </div>
+                            <span style="font-size: 1.4rem; font-weight: 800; color: #ff453a; margin-bottom: 14px;">:</span>
+                            <div style="display: flex; flex-direction: column; align-items: center; background: rgba(255,59,48,0.12); border: 1px solid rgba(255,59,48,0.3); border-radius: 10px; padding: 8px 14px; min-width: 52px;">
+                                <span id="cd-seconds" style="font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 800; color: #ff453a; line-height: 1;">00</span>
+                                <span style="font-size: 0.6rem; color: var(--text-muted); margin-top: 3px; text-transform: uppercase; letter-spacing: 1px;">Saniye</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="text-align: center; font-size: 0.72rem; color: var(--text-muted); margin: 0 0 10px 0; opacity: 0.7;">🔥 Bu fiyat için kalan süre</p>
                     <div class="flagship-header">
                         <h3>Premium Mağaza Kurulumu</h3>
                         <div style="margin-top: 20px; margin-bottom: 5px;">
@@ -3589,8 +3609,7 @@
                 </div>
             </div>
             <div class="taksit-note reveal">
-                💳 Tüm işlemlerinizde <strong>6-9 ay 0 faiz taksit</strong> imkanı
-                mevcuttur.
+                💳 Tüm işlemlerinizde <strong>6-12 ay taksit imkânı</strong> mevcuttur.
             </div>
         </div>
     </section>
@@ -5210,6 +5229,52 @@
                 ticketInput.addEventListener("input", updateROI);
                 updateROI(); /* Initial */
             }
+        })();
+
+        /* --- COUNTDOWN TIMER LOGIC --- */
+        (function() {
+            const countdownKey = "parlaq_campaign_end";
+            const durationHours = 8;
+            
+            function getEndTime() {
+                let endTime = localStorage.getItem(countdownKey);
+                // Eğer endTime yoksa veya süre çoktan bittiyse (veya bozulmuşsa) yeni süre ata
+                if (!endTime || new Date().getTime() > parseInt(endTime)) {
+                    endTime = new Date().getTime() + (durationHours * 60 * 60 * 1000);
+                    localStorage.setItem(countdownKey, endTime);
+                }
+                return parseInt(endTime);
+            }
+
+            function updateTimer() {
+                const now = new Date().getTime();
+                let endTime = getEndTime();
+                let distance = endTime - now;
+
+                if (distance < 0) {
+                    // Süre bittiğinde otomatik sıfırla (8 saatten tekrar başla)
+                    endTime = new Date().getTime() + (durationHours * 60 * 60 * 1000);
+                    localStorage.setItem(countdownKey, endTime);
+                    distance = endTime - now;
+                }
+
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                const hEl = document.getElementById("cd-hours");
+                const mEl = document.getElementById("cd-minutes");
+                const sEl = document.getElementById("cd-seconds");
+
+                if (hEl && mEl && sEl) {
+                    hEl.innerText = String(hours).padStart(2, '0');
+                    mEl.innerText = String(minutes).padStart(2, '0');
+                    sEl.innerText = String(seconds).padStart(2, '0');
+                }
+            }
+
+            setInterval(updateTimer, 1000);
+            updateTimer();
         })();
     </script>
 </body>
