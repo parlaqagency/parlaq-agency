@@ -44,7 +44,11 @@ module.exports = async function handler(req, res) {
     const order_notes = notes || "";
     const package_name = (packageName || "Premium Paket").substring(0, 100);
 
-    // 2. ADIM: Siparişi veritabanına kaydet
+    // 2. ADIM: Siparişi veritabanına kaydet (currency kolonu yoksa önce ekle)
+    try {
+      await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS currency VARCHAR(10) DEFAULT 'TRY';`;
+    } catch (e) { /* Kolon zaten varsa hata görmezden gel */ }
+
     const orderResult = await sql`
       INSERT INTO orders (customer_name, customer_email, customer_phone, customer_address, order_notes, package_name, amount, currency, status)
       VALUES (${user_name}, ${user_email}, ${user_phone}, ${user_address}, ${order_notes}, ${package_name}, ${order_amount}, 'TRY', 'pending')
