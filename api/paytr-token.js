@@ -111,6 +111,6 @@ module.exports = async function handler(req, res) {
     }
   } catch (error) {
     console.error("Sipariş Hatası:", error);
-    return res.status(500).json({ error: "Sipariş oluşturulurken bir hata oluştu." });
+    return res.status(500).json({ error: "HATA: " + (error.message || error.toString()) });
   }
 }
