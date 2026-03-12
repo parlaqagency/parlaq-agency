@@ -1,6 +1,6 @@
 const { sql } = require('@vercel/postgres');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   const envPass = (process.env.ADMIN_PASSWORD || "").trim();
   const fallbackPass = "Dilarakaan0308.";
   const providedPassword = (req.headers['x-admin-password'] || "").trim();

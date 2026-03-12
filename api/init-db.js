@@ -1,6 +1,6 @@
 const { sql } = require('@vercel/postgres');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   try {
     // Tabloyu oluştur
     await sql`
