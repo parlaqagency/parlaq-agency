@@ -44,10 +44,12 @@ module.exports = async function handler(req, res) {
     const order_notes = notes || "";
     const package_name = (packageName || "Premium Paket").substring(0, 100);
 
-    // 2. ADIM: Siparişi veritabanına kaydet (currency kolonu yoksa önce ekle)
-    try {
-      await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS currency VARCHAR(10) DEFAULT 'TRY';`;
-    } catch (e) { /* Kolon zaten varsa hata görmezden gel */ }
+    // 2. ADIM: Eksik kolonları otomatik ekle
+    try { await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS package_name VARCHAR(255);`; } catch (e) {}
+    try { await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS amount DECIMAL(10, 2);`; } catch (e) {}
+    try { await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS currency VARCHAR(10) DEFAULT 'TRY';`; } catch (e) {}
+    try { await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS merchant_oid VARCHAR(100);`; } catch (e) {}
+    try { await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS order_notes TEXT;`; } catch (e) {}
 
     const orderResult = await sql`
       INSERT INTO orders (customer_name, customer_email, customer_phone, customer_address, order_notes, package_name, amount, currency, status)
