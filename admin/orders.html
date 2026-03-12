@@ -257,6 +257,17 @@
 
         function renderOrders(orders) {
             const container = document.getElementById('order-list');
+            if (!orders || orders.length === 0) {
+                container.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 48px; color: var(--text-muted); font-size: 0.9rem;">
+                            Henüz hiç sipariş bulunamadı. <br> 
+                            Siteden bir test siparişi vererek süreci kontrol edebilirsiniz.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
             container.innerHTML = orders.map(order => `
                 <tr>
                     <td>
@@ -265,12 +276,15 @@
                     </td>
                     <td>
                         <div style="font-weight: 600;">${order.customer_name}</div>
+                        <div class="detail-row" style="color: var(--accent); margin-bottom: 4px;"><b>Paket:</b> ${order.package_name || 'Standart'}</div>
                         <div class="detail-row">${order.customer_email}</div>
                         <div class="detail-row">${order.customer_phone}</div>
                         <div class="detail-row" style="color: #888; margin-top: 8px;"><b>Adres:</b> ${order.customer_address}</div>
-                        ${order.order_notes ? `<div class="detail-row" style="color: var(--accent);"><b>Not:</b> ${order.order_notes}</div>` : ''}
+                        ${order.order_notes ? `<div class="detail-row" style="color: #bbb;"><b>Not:</b> ${order.order_notes}</div>` : ''}
                     </td>
-                    <td>18.000 ₺</td>
+                    <td style="font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--accent);">
+                        ${Number(order.amount).toLocaleString('tr-TR')} ${order.currency === 'TRY' ? '₺' : '$'}
+                    </td>
                     <td>
                         <span class="status-badge status-${order.status}">
                             ${order.status === 'paid' ? 'ÖDENDİ' : order.status === 'pending' ? 'BEKLEMEDE' : 'HATA'}

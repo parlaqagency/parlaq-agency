@@ -11,12 +11,18 @@ module.exports = async function handler(req, res) {
           customer_phone VARCHAR(50) NOT NULL,
           customer_address TEXT NOT NULL,
           order_notes TEXT,
-          amount DECIMAL(10, 2) DEFAULT 18000.00,
+          package_name VARCHAR(255),
+          amount DECIMAL(10, 2),
           status VARCHAR(50) DEFAULT 'pending',
           merchant_oid VARCHAR(100) UNIQUE,
           created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
     `;
+
+    // Yeni sütun ekle (Eğer tablo zaten varsa)
+    await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS package_name VARCHAR(255);`;
+    await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS amount DECIMAL(10, 2);`;
+    await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS currency VARCHAR(10) DEFAULT 'TRY';`;
 
     // ID başlangıcını 10000 yap (Sadece tablo boşsa veya gerekliyse)
     // Not: Bu işlem her seferinde çalışsa da hata vermez ancak seq'i resetler. 
