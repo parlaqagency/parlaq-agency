@@ -1,8 +1,8 @@
 import { sql } from '@vercel/postgres';
 
 export default async function handler(req, res) {
-  const adminPassword = process.env.ADMIN_PASSWORD;
-  const providedPassword = req.headers['x-admin-password'];
+  const adminPassword = process.env.ADMIN_PASSWORD?.trim();
+  const providedPassword = req.headers['x-admin-password']?.trim();
 
   if (!adminPassword || providedPassword !== adminPassword) {
     return res.status(401).json({ error: "Yetkisiz erişim." });
