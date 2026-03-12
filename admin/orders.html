@@ -247,7 +247,8 @@
                     const orders = await response.json();
                     renderOrders(orders);
                 } else {
-                    alert('Hatalı şifre veya yetkisiz erişim.');
+                    const errorResult = await response.json().catch(() => ({}));
+                    alert(errorResult.error || 'Hatalı şifre veya sistemsel bir hata oluştu.');
                 }
             } catch (err) {
                 console.error(err);

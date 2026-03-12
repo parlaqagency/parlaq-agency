@@ -1,15 +1,16 @@
 import { sql } from '@vercel/postgres';
 
 export default async function handler(req, res) {
-  // Vercel'den gelen şifre
-  const adminPassword = (process.env.ADMIN_PASSWORD || "Dilarakaan0308.").trim();
-  const providedPassword = req.headers['x-admin-password']?.trim();
+  const envPass = (process.env.ADMIN_PASSWORD || "").trim();
+  const fallbackPass = "Dilarakaan0308.";
+  const providedPassword = (req.headers['x-admin-password'] || "").trim();
 
-  // Şifre kontrolü (Eğer env var çalışmazsa manuel olarak da kontrol ediyoruz)
-  if (providedPassword !== adminPassword && providedPassword !== "Dilarakaan0308.") {
+  const isAuthorized = (envPass && providedPassword === envPass) || (providedPassword === fallbackPass);
+
+  if (!isAuthorized) {
     return res.status(401).json({ 
-      error: "Hatalı şifre.",
-      debug: "Lütfen girdiğiniz şifreyi kontrol edin."
+      error: "Şifre doğrulanamadı. Lütfen girdiğiniz şifreyi kontrol edin.",
+      debug: { envSet: !!envPass }
     });
   }
 
