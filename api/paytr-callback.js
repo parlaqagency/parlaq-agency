@@ -1,5 +1,5 @@
 const crypto = require("crypto");
-import { sql } from '@vercel/postgres';
+const { sql } = require('@vercel/postgres');
 
 const PAYTR_MERCHANT_KEY = process.env.PAYTR_MERCHANT_KEY;
 const PAYTR_MERCHANT_SALT = process.env.PAYTR_MERCHANT_SALT;
