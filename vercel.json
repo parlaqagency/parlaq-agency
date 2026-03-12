@@ -1,0 +1,13 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/paytr-callback",
+      "destination": "/api/paytr-callback"
+    }
+  ],
+  "functions": {
+    "api/paytr-callback.js": {
+      "maxDuration": 10
+    }
+  }
+}
