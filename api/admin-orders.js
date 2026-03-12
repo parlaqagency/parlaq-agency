@@ -4,8 +4,12 @@ export default async function handler(req, res) {
   const adminPassword = process.env.ADMIN_PASSWORD?.trim();
   const providedPassword = req.headers['x-admin-password']?.trim();
 
-  if (!adminPassword || providedPassword !== adminPassword) {
-    return res.status(401).json({ error: "Yetkisiz erişim." });
+  if (!adminPassword) {
+    return res.status(500).json({ error: "Sunucu hatası: ADMIN_PASSWORD tanımlanmamış." });
+  }
+
+  if (providedPassword !== adminPassword) {
+    return res.status(401).json({ error: "Hatalı şifre." });
   }
 
   try {
