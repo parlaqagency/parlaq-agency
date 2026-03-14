@@ -3550,27 +3550,8 @@
             </p>
             <div class="flagship-container">
                 <div class="flagship-card reveal">
-                    <div class="flagship-badge" style="background: linear-gradient(135deg, #ff3b30, #ff9500); box-shadow: 0 0 40px rgba(255, 59, 48, 0.5); font-size: 1.1rem; padding: 12px 32px; transform: translateX(-50%) translateY(-50%) scale(1.1); left: 50%;">GÜNÜN FLAŞ FIRSATI</div>
-                    <!-- Geri Sayım Sayacı -->
-                    <div id="countdown-wrapper" style="display: flex; justify-content: center; align-items: center; gap: 8px; margin: 20px 0 4px 0;">
-                        <div style="display: flex; gap: 6px; align-items: center;">
-                            <div style="display: flex; flex-direction: column; align-items: center; background: rgba(255,59,48,0.12); border: 1px solid rgba(255,59,48,0.3); border-radius: 10px; padding: 8px 14px; min-width: 52px;">
-                                <span id="cd-hours" style="font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 800; color: #ff453a; line-height: 1;">00</span>
-                                <span style="font-size: 0.6rem; color: var(--text-muted); margin-top: 3px; text-transform: uppercase; letter-spacing: 1px;">Saat</span>
-                            </div>
-                            <span style="font-size: 1.4rem; font-weight: 800; color: #ff453a; margin-bottom: 14px;">:</span>
-                            <div style="display: flex; flex-direction: column; align-items: center; background: rgba(255,59,48,0.12); border: 1px solid rgba(255,59,48,0.3); border-radius: 10px; padding: 8px 14px; min-width: 52px;">
-                                <span id="cd-minutes" style="font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 800; color: #ff453a; line-height: 1;">00</span>
-                                <span style="font-size: 0.6rem; color: var(--text-muted); margin-top: 3px; text-transform: uppercase; letter-spacing: 1px;">Dakika</span>
-                            </div>
-                            <span style="font-size: 1.4rem; font-weight: 800; color: #ff453a; margin-bottom: 14px;">:</span>
-                            <div style="display: flex; flex-direction: column; align-items: center; background: rgba(255,59,48,0.12); border: 1px solid rgba(255,59,48,0.3); border-radius: 10px; padding: 8px 14px; min-width: 52px;">
-                                <span id="cd-seconds" style="font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 800; color: #ff453a; line-height: 1;">00</span>
-                                <span style="font-size: 0.6rem; color: var(--text-muted); margin-top: 3px; text-transform: uppercase; letter-spacing: 1px;">Saniye</span>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="text-align: center; font-size: 0.72rem; color: var(--text-muted); margin: 0 0 10px 0; opacity: 0.7;">🔥 Bu fiyat için kalan süre</p>
+                    <div class="flagship-badge" style="background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 0 40px var(--accent-glow); font-size: 1.1rem; padding: 12px 32px; transform: translateX(-50%) translateY(-50%); left: 50%;">BUGÜN PARLAMAYA BAŞLAYIN</div>
+
                     <div class="flagship-header">
                         <h3>Premium Mağaza Kurulumu</h3>
                         <div style="margin-top: 20px; margin-bottom: 5px;">
@@ -3604,7 +3585,7 @@
                         </li>
                     </ul>
                     <button class="flagship-cta" onclick="startCheckout('Premium Mağaza Kurulumu', 100)">
-                        Fırsatı Yakala & Başlat <span class="arrow">›</span>
+                        Projeyi Başlat <span class="arrow">›</span>
                     </button>
                 </div>
             </div>
@@ -4061,9 +4042,23 @@
         .loading-spinner {
             display: none;
             text-align: center;
-            padding: 40px;
+            padding: 60px 40px;
             color: var(--accent);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        .spinner-icon {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(0, 229, 255, 0.1);
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         /* End Checkout CSS */
     </style>
@@ -4072,7 +4067,14 @@
     <div id="checkout-modal" class="checkout-modal-overlay">
         <div class="checkout-modal-content" data-lenis-prevent>
             <div class="checkout-header">
-                <h3>Projeyi Başlat</h3>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <h3>Projeyi Başlat</h3>
+                    <div style="height: 20px; width: 1px; background: var(--glass-border);"></div>
+                    <div style="display: flex; align-items: center; gap: 6px; opacity: 0.8;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: #22c55e;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.5px;">PayTR Güvenli Ödeme</span>
+                    </div>
+                </div>
                 <button class="checkout-close" onclick="closeCheckout()" aria-label="Kapat">&times;</button>
             </div>
             <div class="checkout-body">
@@ -4112,11 +4114,25 @@
                 </div>
 
                 <div id="checkout-loading" class="loading-spinner">
-                    Güvenli ödeme sayfası hazırlanıyor... Lütfen bekleyin.
+                    <div class="spinner-icon"></div>
+                    PayTR güvenli ödeme sayfası hazırlanıyor...
                 </div>
 
                 <div id="paytr-iframe-container">
                     <!-- PayTR iFrame will be loaded here -->
+                </div>
+
+                <!-- PayTR Trust Badge -->
+                <div id="paytr-trust-badge" style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--glass-border); text-align: center; display: none;">
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">Ödeme Altyapısı</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <img src="https://www.paytr.com/img/paytr-logo.svg" alt="PayTR" style="height: 20px; filter: brightness(0) invert(1); opacity: 0.7;">
+                        </div>
+                        <p style="font-size: 0.7rem; color: var(--text-muted); opacity: 0.6; max-width: 300px; line-height: 1.4;">
+                            Kredi kartı bilgileriniz 256-bit SSL sertifikası ile korunmaktadır. Ödemeniz PayTR güvencesiyle gerçekleştirilir.
+                        </p>
+                    </div>
                 </div>
 
             </div>
@@ -4257,6 +4273,8 @@
             document.getElementById("checkout-form-container").style.display = "block";
             document.getElementById("paytr-iframe-container").style.display = "none";
             document.getElementById("paytr-iframe-container").innerHTML = "";
+            const trustBadge = document.getElementById("paytr-trust-badge");
+            if(trustBadge) trustBadge.style.display = "none";
             document.getElementById("checkout-loading").style.display = "none";
         };
 
@@ -4292,7 +4310,9 @@
                 if (data.token) {
                     // Show iFrame
                     const container = document.getElementById("paytr-iframe-container");
+                    const trustBadge = document.getElementById("paytr-trust-badge");
                     container.style.display = "block";
+                    if(trustBadge) trustBadge.style.display = "block";
                     // Embed PayTR iframe using their standard script wrapper
                     container.innerHTML = `<iframe src="https://www.paytr.com/odeme/guvenli/${data.token}" id="paytriframe" frameborder="0" scrolling="no" style="width: 100%; height: 600px;"></iframe>
                     <script>iFrameResize({},'#paytriframe');\x3C/script>`;
