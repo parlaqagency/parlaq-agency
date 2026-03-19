@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PARLAQ Admin Paneli</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #080810;
+      color: #e0e0e0;
+      min-height: 100vh;
+    }
+
+    /* LOGIN */
+    #login-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: radial-gradient(ellipse at center, #1a0a2e 0%, #080810 70%);
+    }
+
+    .login-box {
+      background: #12121f;
+      border: 1px solid #2a2a4a;
+      border-radius: 16px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+    }
+
+    .login-box h1 {
+      font-size: 28px;
+      background: linear-gradient(135deg, #6c63ff, #f72585);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .login-box p { color: #888; margin-bottom: 32px; font-size: 14px; }
+
+    .login-box input {
+      width: 100%;
+      padding: 14px 16px;
+      background: #1e1e35;
+      border: 1px solid #2a2a4a;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 15px;
+      margin-bottom: 16px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .login-box input:focus { border-color: #6c63ff; }
+
+    .login-box button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #6c63ff, #f72585);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .login-box button:hover { opacity: 0.85; }
+    .login-error { color: #f72585; font-size: 13px; margin-top: 12px; display: none; }
+
+    /* PANEL */
+    #panel { display: none; }
+
+    header {
+      background: #12121f;
+      border-bottom: 1px solid #1e1e35;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      font-size: 20px;
+      background: linear-gradient(135deg, #6c63ff, #f72585);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header span { color: #555; font-size: 13px; }
+
+    .container { padding: 32px; max-width: 1400px; margin: 0 auto; }
+
+    /* STATS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: #12121f;
+      border: 1px solid #1e1e35;
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .stat-card .label { color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .stat-card .value { font-size: 28px; font-weight: 700; color: #fff; }
+    .stat-card .sub { font-size: 12px; color: #555; margin-top: 4px; }
+    .stat-card.accent .value { background: linear-gradient(135deg, #6c63ff, #f72585); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+    /* TOOLBAR */
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .toolbar input {
+      flex: 1;
+      min-width: 200px;
+      padding: 10px 16px;
+      background: #12121f;
+      border: 1px solid #1e1e35;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .toolbar input:focus { border-color: #6c63ff; }
+
+    .toolbar select {
+      padding: 10px 16px;
+      background: #12121f;
+      border: 1px solid #1e1e35;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .btn-export {
+      padding: 10px 20px;
+      background: #1e1e35;
+      border: 1px solid #2a2a4a;
+      border-radius: 8px;
+      color: #aaa;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-export:hover { border-color: #6c63ff; color: #6c63ff; }
+
+    /* TABLE */
+    .table-wrap {
+      background: #12121f;
+      border: 1px solid #1e1e35;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    thead { background: #0e0e1e; }
+
+    th {
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #555;
+      font-weight: 600;
+    }
+
+    td {
+      padding: 14px 16px;
+      border-top: 1px solid #1a1a2e;
+      font-size: 14px;
+      vertical-align: middle;
+    }
+
+    tr:hover td { background: #15152a; }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge.paid { background: #0d2e1a; color: #4ade80; border: 1px solid #166534; }
+    .badge.pending { background: #2e2510; color: #facc15; border: 1px solid #713f12; }
+    .badge.failed { background: #2e1010; color: #f87171; border: 1px solid #7f1d1d; }
+    .badge.cancelled { background: #1e1e1e; color: #888; border: 1px solid #333; }
+
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .btn-status {
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      border: 1px solid;
+      transition: all 0.2s;
+      background: transparent;
+    }
+
+    .btn-status.paid { color: #4ade80; border-color: #166534; }
+    .btn-status.paid:hover { background: #0d2e1a; }
+    .btn-status.cancelled { color: #888; border-color: #333; }
+    .btn-status.cancelled:hover { background: #1e1e1e; }
+    .btn-status.pending { color: #facc15; border-color: #713f12; }
+    .btn-status.pending:hover { background: #2e2510; }
+
+    .btn-wa {
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      border: 1px solid #166534;
+      background: transparent;
+      color: #4ade80;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-wa:hover { background: #0d2e1a; }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #444;
+    }
+
+    .loading { text-align: center; padding: 60px; color: #555; }
+
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1e1e35;
+      border: 1px solid #6c63ff;
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    #toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- GİRİŞ EKRANI -->
+<div id="login-screen">
+  <div class="login-box">
+    <h1>PARLAQ</h1>
+    <p>Admin Paneli</p>
+    <input type="password" id="password-input" placeholder="Şifre" onkeydown="if(event.key==='Enter') login()" />
+    <button onclick="login()">Giriş Yap</button>
+    <div class="login-error" id="login-error">Şifre yanlış.</div>
+  </div>
+</div>
+
+<!-- ANA PANEL -->
+<div id="panel">
+  <header>
+    <h1>PARLAQ Admin</h1>
+    <span id="last-updated"></span>
+  </header>
+
+  <div class="container">
+    <!-- İSTATİSTİK KARTLARI -->
+    <div class="stats-grid">
+      <div class="stat-card accent">
+        <div class="label">Bu Ay Kazanç</div>
+        <div class="value" id="stat-month">—</div>
+        <div class="sub" id="stat-month-count"></div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Toplam Kazanç</div>
+        <div class="value" id="stat-total">—</div>
+        <div class="sub" id="stat-total-count"></div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Bekleyen</div>
+        <div class="value" id="stat-pending">—</div>
+        <div class="sub">sipariş</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Toplam Sipariş</div>
+        <div class="value" id="stat-all">—</div>
+        <div class="sub">kayıt</div>
+      </div>
+    </div>
+
+    <!-- ARAÇ ÇUBUĞU -->
+    <div class="toolbar">
+      <input type="text" id="search-input" placeholder="Müşteri adı, e-posta veya sipariş no ara..." oninput="renderTable()" />
+      <select id="filter-status" onchange="renderTable()">
+        <option value="">Tüm Durumlar</option>
+        <option value="paid">Ödendi</option>
+        <option value="pending">Bekliyor</option>
+        <option value="failed">Başarısız</option>
+        <option value="cancelled">İptal</option>
+      </select>
+      <select id="filter-month" onchange="renderTable()">
+        <option value="">Tüm Zamanlar</option>
+      </select>
+      <button class="btn-export" onclick="exportCSV()">CSV İndir</button>
+    </div>
+
+    <!-- TABLO -->
+    <div class="table-wrap">
+      <div class="loading" id="loading">Yükleniyor...</div>
+      <table id="orders-table" style="display:none">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Müşteri</th>
+            <th>Paket</th>
+            <th>Tutar</th>
+            <th>Durum</th>
+            <th>Tarih</th>
+            <th>İşlemler</th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+      <div class="empty-state" id="empty-state" style="display:none">Sipariş bulunamadı.</div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  let allOrders = [];
+  let adminPassword = '';
+
+  function login() {
+    const pw = document.getElementById('password-input').value;
+    if (!pw) return;
+    adminPassword = pw;
+    fetchOrders();
+  }
+
+  async function fetchOrders() {
+    try {
+      const res = await fetch('/api/admin-orders', {
+        headers: { 'x-admin-password': adminPassword }
+      });
+
+      if (res.status === 401) {
+        document.getElementById('login-error').style.display = 'block';
+        return;
+      }
+
+      allOrders = await res.json();
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('panel').style.display = 'block';
+      document.getElementById('last-updated').textContent = 'Son güncelleme: ' + new Date().toLocaleTimeString('tr-TR');
+
+      populateMonthFilter();
+      updateStats();
+      renderTable();
+    } catch (e) {
+      document.getElementById('login-error').style.display = 'block';
+    }
+  }
+
+  function populateMonthFilter() {
+    const months = new Set();
+    allOrders.forEach(o => {
+      const d = new Date(o.created_at);
+      months.add(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);
+    });
+
+    const select = document.getElementById('filter-month');
+    [...months].sort().reverse().forEach(m => {
+      const [y, mo] = m.split('-');
+      const label = new Date(y, mo-1).toLocaleString('tr-TR', { month: 'long', year: 'numeric' });
+      select.innerHTML += `<option value="${m}">${label}</option>`;
+    });
+  }
+
+  function updateStats() {
+    const paid = allOrders.filter(o => o.status === 'paid');
+    const now = new Date();
+    const thisMonth = paid.filter(o => {
+      const d = new Date(o.created_at);
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    });
+
+    const totalRevenue = paid.reduce((s, o) => s + (parseFloat(o.amount) || 0), 0);
+    const monthRevenue = thisMonth.reduce((s, o) => s + (parseFloat(o.amount) || 0), 0);
+    const pending = allOrders.filter(o => o.status === 'pending').length;
+
+    document.getElementById('stat-month').textContent = monthRevenue.toLocaleString('tr-TR') + ' ₺';
+    document.getElementById('stat-month-count').textContent = thisMonth.length + ' sipariş';
+    document.getElementById('stat-total').textContent = totalRevenue.toLocaleString('tr-TR') + ' ₺';
+    document.getElementById('stat-total-count').textContent = paid.length + ' ödeme';
+    document.getElementById('stat-pending').textContent = pending;
+    document.getElementById('stat-all').textContent = allOrders.length;
+  }
+
+  function getFiltered() {
+    const search = document.getElementById('search-input').value.toLowerCase();
+    const status = document.getElementById('filter-status').value;
+    const month = document.getElementById('filter-month').value;
+
+    return allOrders.filter(o => {
+      const matchSearch = !search ||
+        (o.customer_name || '').toLowerCase().includes(search) ||
+        (o.customer_email || '').toLowerCase().includes(search) ||
+        (o.merchant_oid || '').toLowerCase().includes(search);
+
+      const matchStatus = !status || o.status === status;
+
+      const matchMonth = !month || (() => {
+        const d = new Date(o.created_at);
+        const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+        return key === month;
+      })();
+
+      return matchSearch && matchStatus && matchMonth;
+    });
+  }
+
+  function renderTable() {
+    const filtered = getFiltered();
+    const tbody = document.getElementById('table-body');
+    const table = document.getElementById('orders-table');
+    const empty = document.getElementById('empty-state');
+    document.getElementById('loading').style.display = 'none';
+
+    if (filtered.length === 0) {
+      table.style.display = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+
+    table.style.display = 'table';
+    empty.style.display = 'none';
+
+    tbody.innerHTML = filtered.map(o => {
+      const date = new Date(o.created_at).toLocaleString('tr-TR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+      const amount = o.amount ? Number(o.amount).toLocaleString('tr-TR') + ' ₺' : '—';
+      const phone = (o.customer_phone || '').replace(/\D/g, '');
+      const waPhone = phone.startsWith('0') ? '9' + phone : phone.startsWith('90') ? phone : '90' + phone;
+      const waMsg = encodeURIComponent(`Merhaba ${o.customer_name}, PARLAQ Agency olarak siparişiniz hakkında bilgi vermek istedik.`);
+
+      const statusLabels = { paid: 'Ödendi', pending: 'Bekliyor', failed: 'Başarısız', cancelled: 'İptal' };
+      const badge = `<span class="badge ${o.status}">${statusLabels[o.status] || o.status}</span>`;
+
+      const actions = `
+        <div class="actions">
+          ${o.status !== 'paid' ? `<button class="btn-status paid" onclick="updateStatus('${o.merchant_oid}', 'paid')">✓ Ödendi</button>` : ''}
+          ${o.status !== 'cancelled' ? `<button class="btn-status cancelled" onclick="updateStatus('${o.merchant_oid}', 'cancelled')">✕ İptal</button>` : ''}
+          ${o.status !== 'pending' ? `<button class="btn-status pending" onclick="updateStatus('${o.merchant_oid}', 'pending')">↩ Beklet</button>` : ''}
+          ${phone ? `<a class="btn-wa" href="https://wa.me/${waPhone}?text=${waMsg}" target="_blank">💬 WA</a>` : ''}
+        </div>
+      `;
+
+      return `
+        <tr>
+          <td style="color:#555;font-size:12px">${o.id}</td>
+          <td>
+            <div style="font-weight:600">${o.customer_name || '—'}</div>
+            <div style="color:#555;font-size:12px">${o.customer_email || ''}</div>
+            <div style="color:#555;font-size:12px">${o.customer_phone || ''}</div>
+          </td>
+          <td>${o.package_name || '—'}</td>
+          <td style="font-weight:600">${amount}</td>
+          <td>${badge}</td>
+          <td style="color:#555;font-size:12px;white-space:nowrap">${date}</td>
+          <td>${actions}</td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  async function updateStatus(merchantOid, status) {
+    try {
+      const res = await fetch('/api/admin-update', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-password': adminPassword
+        },
+        body: JSON.stringify({ merchant_oid: merchantOid, status })
+      });
+
+      if (res.ok) {
+        const order = allOrders.find(o => o.merchant_oid === merchantOid);
+        if (order) order.status = status;
+        updateStats();
+        renderTable();
+        showToast('Durum güncellendi.');
+      }
+    } catch (e) {
+      showToast('Hata oluştu.');
+    }
+  }
+
+  function exportCSV() {
+    const filtered = getFiltered();
+    const headers = ['ID', 'Müşteri', 'E-posta', 'Telefon', 'Paket', 'Tutar', 'Durum', 'Sipariş No', 'Tarih'];
+    const rows = filtered.map(o => [
+      o.id,
+      o.customer_name,
+      o.customer_email,
+      o.customer_phone,
+      o.package_name,
+      o.amount,
+      o.status,
+      o.merchant_oid,
+      new Date(o.created_at).toLocaleString('tr-TR')
+    ].map(v => `"${(v || '').toString().replace(/"/g, '""')}"`).join(','));
+
+    const csv = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `parlaq-siparisler-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('CSV indirildi.');
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+</script>
+</body>
+</html>
