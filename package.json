@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@vercel/postgres": "^0.10.0"
+    "@vercel/postgres": "^0.10.0",
+    "resend": "^6.9.4"
   }
 }
