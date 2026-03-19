@@ -89,6 +89,13 @@ module.exports = async function handler(req, res) {
         });
 
         console.log(`📧 E-postalar gönderildi: ${order.customer_email}`);
+
+        // 📱 Telegram bildirimi
+        const telegramMsg = encodeURIComponent(
+          `🎉 YENİ SİPARİŞ!\n\n👤 ${order.customer_name}\n📦 ${order.package_name || 'Belirtilmedi'}\n💰 ${amountFormatted}\n🔑 ${merchant_oid}`
+        );
+        await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${process.env.TELEGRAM_CHAT_ID}&text=${telegramMsg}`);
+        console.log(`📱 Telegram bildirimi gönderildi`);
       }
     } else {
       // ❌ Siparişi "failed" olarak güncelle
