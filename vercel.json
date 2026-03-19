@@ -8,6 +8,9 @@
   "functions": {
     "api/paytr-callback.js": {
       "maxDuration": 10
+    },
+    "api/paytr-token.js": {
+      "maxDuration": 30
     }
   }
 }

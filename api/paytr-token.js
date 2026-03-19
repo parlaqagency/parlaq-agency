@@ -23,16 +23,16 @@ module.exports = async function handler(req, res) {
     let final_amount_try = 0;
     let exchange_rate = 1;
 
-    // 1. ADIM: Güncel USD/TRY kurunu çek
+    // 1. ADIM: Güncel USD/TRY kurunu çek (başarısız olursa fallback kur kullan)
     try {
-      const rateResponse = await fetch("https://api.exchangerate-api.com/v4/latest/USD");
+      const rateResponse = await fetch("https://api.exchangerate-api.com/v4/latest/USD", { signal: AbortSignal.timeout(5000) });
       const rateData = await rateResponse.json();
       exchange_rate = rateData.rates.TRY;
-      final_amount_try = Math.round(original_amount_usd * exchange_rate); 
     } catch (e) {
-      console.error("Döviz kuru çekilemedi:", e);
-      return res.status(500).json({ error: "Döviz kuru alınamadı. Lütfen tekrar deneyin." });
+      console.error("Döviz kuru çekilemedi, fallback kur kullanılıyor:", e);
+      exchange_rate = 38; // Fallback kur
     }
+    final_amount_try = Math.round(original_amount_usd * exchange_rate);
 
     const order_amount = final_amount_try; 
     const payment_amount = Math.floor(order_amount * 100).toString(); // Kuruş bazında tam sayı
