@@ -1522,6 +1522,130 @@
             }
         }
 
+        /* FREE ANALYSIS CTA */
+        .analysis-cta {
+            padding: 100px 0;
+            background: var(--bg2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .analysis-cta::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(ellipse, rgba(108,99,255,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .analysis-cta-inner {
+            max-width: 680px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .analysis-cta-inner .section-label {
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .analysis-cta-title {
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+
+        .analysis-cta-desc {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            margin-bottom: 40px;
+            line-height: 1.7;
+        }
+
+        .analysis-form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            text-align: left;
+        }
+
+        .analysis-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .analysis-input {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+
+        .analysis-input:focus {
+            border-color: var(--accent);
+        }
+
+        .analysis-input::placeholder {
+            color: var(--text-muted);
+            opacity: 0.6;
+        }
+
+        .analysis-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.2s;
+            font-family: inherit;
+            letter-spacing: 0.3px;
+        }
+
+        .analysis-btn:hover { opacity: 0.88; transform: translateY(-2px); }
+        .analysis-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .analysis-note {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            opacity: 0.6;
+            margin-top: 8px;
+        }
+
+        .analysis-success {
+            display: none;
+            padding: 24px;
+            background: rgba(74,222,128,0.08);
+            border: 1px solid rgba(74,222,128,0.2);
+            border-radius: 12px;
+            text-align: center;
+            color: #4ade80;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .analysis-form-row { grid-template-columns: 1fr; }
+        }
+
         .good-frame .frame-browser span:nth-child(2) {
             background: #f59e0b;
         }
@@ -3734,6 +3858,33 @@
             </div>
         </div>
     </div>
+    <!-- ÜCRETSİZ ANALİZ CTA -->
+    <section class="analysis-cta" id="ucretsiz-analiz">
+        <div class="container">
+            <div class="analysis-cta-inner">
+                <div class="section-label reveal">Ücretsiz & Taahhütsüz</div>
+                <h2 class="analysis-cta-title reveal">Web sitenizi<br /><span class="gradient-text">ücretsiz analiz</span> edelim.</h2>
+                <p class="analysis-cta-desc reveal">
+                    Sitenizin nerede kayıp verdiğini, rakiplerinizden neden geri kaldığını ve nasıl daha fazla müşteri kazanabileceğinizi somut verilerle gösterelim.
+                </p>
+                <div id="analysis-form-wrap">
+                    <form class="analysis-form reveal" id="analysis-form" onsubmit="submitAnalysis(event)">
+                        <div class="analysis-form-row">
+                            <input class="analysis-input" type="text" id="analysis-name" placeholder="Adınız" required />
+                            <input class="analysis-input" type="email" id="analysis-email" placeholder="E-posta adresiniz" required />
+                        </div>
+                        <input class="analysis-input" type="url" id="analysis-website" placeholder="Web siteniz (opsiyonel, örn: https://siteniz.com)" />
+                        <button class="analysis-btn" type="submit" id="analysis-btn">Ücretsiz Analiz İstiyorum →</button>
+                        <p class="analysis-note">Spam yok. Sadece işe yarayan bilgiler.</p>
+                    </form>
+                    <div class="analysis-success" id="analysis-success">
+                        ✅ Talebiniz alındı! En kısa sürede sizinle iletişime geçeceğiz.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- FAQ (Sıkça Sorulan Sorular) -->
     <section id="faq" style="position: relative; overflow: hidden;">
         <div class="container" style="position: relative; z-index: 1">
@@ -5303,6 +5454,41 @@
         })();
     </script>
     <script>
+        // Ücretsiz Analiz Formu
+        async function submitAnalysis(e) {
+            e.preventDefault();
+            const btn = document.getElementById('analysis-btn');
+            btn.disabled = true;
+            btn.textContent = 'Gönderiliyor...';
+
+            const body = {
+                name: document.getElementById('analysis-name').value,
+                email: document.getElementById('analysis-email').value,
+                website: document.getElementById('analysis-website').value,
+            };
+
+            try {
+                const res = await fetch('/api/lead-form', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body),
+                });
+
+                if (res.ok) {
+                    document.getElementById('analysis-form').style.display = 'none';
+                    document.getElementById('analysis-success').style.display = 'block';
+                } else {
+                    btn.disabled = false;
+                    btn.textContent = 'Ücretsiz Analiz İstiyorum →';
+                    alert('Bir hata oluştu, lütfen tekrar deneyin.');
+                }
+            } catch {
+                btn.disabled = false;
+                btn.textContent = 'Ücretsiz Analiz İstiyorum →';
+                alert('Bir hata oluştu, lütfen tekrar deneyin.');
+            }
+        }
+
         // WhatsApp tooltip balonu — 5sn sonra açılır, 4sn görünür, her 30sn tekrar eder
         (function() {
             const btn = document.getElementById('wa-btn');
