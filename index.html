@@ -98,6 +98,19 @@
             color: var(--accent);
         }
 
+        /* Section overlay (Projeler & Farkımız) Light Mode */
+        .section-theme-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            pointer-events: none;
+            background: linear-gradient(135deg, #05050f 0%, #0d0820 40%, #080d1a 100%);
+            transition: background 0.3s ease;
+        }
+        html[data-theme="light"] .section-theme-overlay {
+            background: var(--bg);
+        }
+
         /* Range Input Light Mode */
         html[data-theme="light"] input[type="range"]::-webkit-slider-runnable-track {
             background: rgba(0, 0, 0, 0.15) !important;
@@ -3606,7 +3619,7 @@
     </section>
     <!-- PROJELER -->
     <section id="projeler" style="position: relative; overflow: hidden;">
-        <div style="position:absolute;inset:0;z-index:3;background:linear-gradient(135deg,#05050f 0%,#0d0820 40%,#080d1a 100%);pointer-events:none;"></div>
+        <div class="section-theme-overlay"></div>
         <div class="container" style="position: relative; z-index: 4;">
             <div class="section-label reveal">Gerçek Sonuçlar</div>
             <h2 class="section-title reveal">Yaptıklarımız <span class="animated-gradient-text">Konuşuyor.</span></h2>
@@ -3754,7 +3767,7 @@
         </div>
     </section>
     <section id="karsilastirma" style="position: relative; overflow: hidden;">
-        <div style="position:absolute;inset:0;z-index:3;background:linear-gradient(135deg,#05050f 0%,#0d0820 40%,#080d1a 100%);pointer-events:none;"></div>
+        <div class="section-theme-overlay"></div>
         <div class="container" style="position: relative; z-index: 4">
             <h2 class="section-title reveal">Standartlara<br />Veda Edin.</h2>
             <p class="section-desc reveal">
